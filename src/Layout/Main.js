@@ -9,7 +9,7 @@ import Footer from '../Shared/Footer/Footer';
 const Main = () => {
     return (
         <div>
-            <Container>
+            <Container >
                 <Header></Header>
                 <Row>
                     <Col lg="2">
