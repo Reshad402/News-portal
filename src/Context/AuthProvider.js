@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithPopup, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import app from '../Firebase/Firebase.config';
 
 //! this need to grab in right side nav js           //! AuthProvider is used to index.js files
@@ -10,16 +10,49 @@ const auth = getAuth(app)
 
 
 const AuthProvider = ({children}) => {
-    const user = {displayName: 'Reshad'}
+    //?------(1) Here important that we use 
+    const [user,setUser] = useState(null)
+    
+
     //!-----------(2) Now get the (auth,provider) and return as given in firebase documentation
         const providerLogin = (provider)=>{
             return signInWithPopup(auth,provider);
         }
 
 
+                                                            //?---(1)Create user with email pass
+        const createUser = (email,password)=>{
+            return createUserWithEmailAndPassword(auth,email,password)
+        }
+                                                            //?---(2) User signIN
+        const signIn = (email,password)=>{
+            return signInWithEmailAndPassword(auth,email,password);
+        }
 
 
-    const authInfo = {user,providerLogin}
+
+        const logOut = () =>{
+            return signOut(auth);
+        }
+
+
+
+    //?---------(2) outside kew monitor korche so useEffect
+    useEffect(()=>{
+        const unsubscribe = onAuthStateChanged(auth,(currentUser)=>{
+            console.log(currentUser)
+            setUser(currentUser)
+        });
+
+        return () =>{
+            unsubscribe();
+        }
+
+    },[])
+
+
+
+    const authInfo = {user,providerLogin,logOut,createUser,signIn}
     return (
         <AuthContext.Provider value={authInfo}>
             {children}

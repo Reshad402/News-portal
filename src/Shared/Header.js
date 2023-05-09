@@ -7,9 +7,22 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../Context/AuthProvider';
+import { FaUser } from 'react-icons/fa';
+import { ButtonToolbar, Image } from 'react-bootstrap';
 
 const Header = () => {
-  const {user} = useContext(AuthContext)
+  const {user,logOut} = useContext(AuthContext)
+
+  const handleLogOut = () => {
+    logOut()
+    .then(() => {
+
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+  }
+
     return (
     <Navbar bg="light" expand="lg" className='mb-3'>
       <Container fluid>
@@ -21,18 +34,11 @@ const Header = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link bg="light" href="#action1"><b>Home</b> </Nav.Link>
-            <NavDropdown title="Link" id="navbarScrollingDropdown">
-                
-              <NavDropdown.Item href="#action3"><b>Action</b></NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
-            </NavDropdown>
+            <div className='me-2'>
+            <Link to='/login' bg-light> <b>Login</b></Link>
+            <Link to='/register' bg-light> <b>Register</b></Link>
+            </div>
+            
           </Nav>
           <Form className="d-flex">
             <Form.Control
@@ -43,12 +49,44 @@ const Header = () => {
             />
             <Button variant="outline-success" className='me-5'>Search</Button>
           </Form>
-            <Nav.Link href="#"  >
-              <b>{user?.displayName}</b>
-            </Nav.Link>
-            <img>
+            <Nav.Link eventKey={1} href="#" className='me-4' >
 
-            </img>
+    
+
+          
+             <>
+            {user?.displayName}:
+            <button onClick={handleLogOut}>Logout</button>
+            </> 
+          
+          {/* {
+                                                //!Cannot use uid
+            user?.uid ?
+            <>
+            <span>{user?.displayName}</span>
+            <button onClick={handleLogOut}>Logout</button>
+            </>
+            :
+
+            <>
+            <link to='/login'>Login</link>
+            <link to='/register'>Register</link>
+            </>
+          } */}
+
+            </Nav.Link>
+            <Nav.Link eventKey={2} href="#memes"  >
+              {
+                user?.photoURL?
+                <Image style={{height:'40px'}} roundedCircle src={user?.photoURL} ></Image>
+                :
+                <FaUser></FaUser>
+                
+              
+              }
+              
+            </Nav.Link>
+        
         </Navbar.Collapse>
       </Container>
     </Navbar>
